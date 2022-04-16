@@ -52,19 +52,19 @@ saveButton.grid(row=1, column=3, padx=10, pady=5)
 
 
 # ----------- Choice dialog -----------
-choiceFrame = tk.LabelFrame(root, text="Transformation Choice")
+choiceFrame = tk.LabelFrame(root, text="PILIHAN TRANSFORMASI")
 choiceFrame.place(height=100, width=450, rely=0.12, relx=0.03)
 # ---------------- Choice Button
 choiceVar = tk.StringVar()
 choiceVar.set("l")
-choiceOne = ttk.Radiobutton(choiceFrame, text='TRANSFORMATION FROM LOCAL SITE TO UTM', value="l", variable=choiceVar)
+choiceOne = ttk.Radiobutton(choiceFrame, text='Transformasi dari lokal site ke UTM', value="l", variable=choiceVar)
 choiceOne.place(rely=0.1, relx=0.1)
-choiceTwo = ttk.Radiobutton(choiceFrame, text='TRANSFORMATION FROM UTM TO LOCAL SITE', value="u", variable=choiceVar)
+choiceTwo = ttk.Radiobutton(choiceFrame, text='Transformasi dari UTM ke lokal site', value="u", variable=choiceVar)
 choiceTwo.place(rely=0.45, relx=0.1)
 
-
+# ----------- TREEVIEW FRAME -----------
 #Frame Treeview 1 (data input)
-inputFrame = tk.LabelFrame(root, text="Data Input")
+inputFrame = tk.LabelFrame(root, text="DATA INPUT")
 inputFrame.place(height=300, width=500, rely=0.60, relx=0)
 # Treeview data input
 inputTreeview = ttk.Treeview(inputFrame)
@@ -76,7 +76,7 @@ treescrollxInput.pack(side="bottom", fill="x")
 treescrollyInput.pack(side="right", fill="y")
 
 #Frame Treeview 2 (Hasil Transformasi)
-transFrame = tk.LabelFrame(root, text="Hasil Transformasi")
+transFrame = tk.LabelFrame(root, text="HASIL TRANSFORMASI")
 transFrame.place(height=300, width=500, rely=0.60, relx=0.5)
 # Treeview transformasi
 transTreeview = ttk.Treeview(transFrame)
@@ -88,7 +88,7 @@ treescrollxTrans.pack(side="bottom", fill="x")
 treescrollyTrans.pack(side="right", fill="y")
 
 #Frame Treeview 3 (Deviasi Jarak)
-devFrame = tk.LabelFrame(root, text="Deviasi Perbandingan distorsi antara jarak dan koordinat")
+devFrame = tk.LabelFrame(root, text="DEVIASI PERBANDINGAN DISTORSI")
 devFrame.place(height=130, width=500, rely=0.43, relx=0.5)
 # Treeview transformasi
 devTreeview = ttk.Treeview(devFrame)
@@ -100,11 +100,13 @@ treescrollxDev.pack(side="bottom", fill="x")
 treescrollyDev.pack(side="right", fill="y")
 
 
+# ----------- FRAME FIGURE UNTUK HASIL PLOTTING -----------
 #Frame Figure
-figureFrame = tk.LabelFrame(root, text="Plotting")
+figureFrame = tk.LabelFrame(root, text="PLOTTING")
 figureFrame.place(height=340, width=500, rely=0.0, relx=0.5)
 
 
+# ----------- FRAME RESUME PENGOLAHAN DATA -----------
 #Frame resume
 resumeFrame = tk.LabelFrame(root, text="RESUME PENGOLAHAN DATA")
 resumeFrame.place(height=300, width=450, rely=0.22, relx=0.03)
@@ -117,57 +119,48 @@ class labelResume:
 
     def label(self):
         lText = tk.Label(resumeFrame, text=self.text).grid(column=0, row=self.row)
-        lText2 = tk.Label(resumeFrame, textvariable=self.dx).grid(column=1, row=self.row)
+        lText2 = tk.Label(resumeFrame, textvariable=self.dx).grid(column=2, row=self.row)
 
 
 dC = tk.IntVar()
-dCL = labelResume(dC, " Total data adalah                                         ||   ", 0)
-dCL.label()
-
 dfC = tk.IntVar()
-dfCL = labelResume(dfC, " Total data setelah di bersihkan                    ||   ", 1)
-dfCL.label()
-
 NArE = tk.IntVar()
-NArEL = labelResume(NArE, " Total data NA di kolom Easting                   ||   ", 2)
-NArEL.label()
-
 NArN = tk.IntVar()
-NArNL = labelResume(NArN, " Total data NA di kolom Northing                   ||   ", 3)
-NArNL.label()
-
-separator = tk.Label(resumeFrame, text="\n< == Perbandingan Nilai Distorsi Jarak dan Koordinat  == > ")
-separator.grid(column=0, row=4, columnspan=2)
-
 dCount = tk.IntVar()
-dCountL = labelResume(dCount, " Total data                                                 || ", 5)
-dCountL.label()
-
 dMax = tk.IntVar()
-dMaxL = labelResume(dMax, " Deviasi maksimum                                   || ", 6)
-dMaxL.label()
-
 dMin = tk.IntVar()
-dMinL = labelResume(dMin, " Deviasi minimum                                     || ", 7)
-dMinL.label()
-
 dMean = tk.IntVar()
-dMeanL = labelResume(dMean, " Rata-rata deviasi                                      || ", 8)
-dMeanL.label()
-
 dStd = tk.IntVar()
-dStdL = labelResume(dStd, " Simpangan Baku deviasi                          || ", 9)
-dStdL.label()
-
 devCount = tk.IntVar()
-devCountL = labelResume(devCount, " Data diluar batas Toleransi                      || ", 10)
-devCountL.label()
-
 fCount = tk.IntVar()
-fCountL = labelResume(fCount, " Data dengan pengurutan salah                      || ", 11)
-fCountL.label()
+
+labelData = {'dx':[dC, dfC, NArE, NArN, dCount, dMax, dMin, dMean, dStd, devCount, fCount],
+             'text':[" Total data "," Total data setelah di bersihkan "," Total data NA di kolom Easting ",
+                     " Total data NA di kolom Northing "," Total data deviasi"," Deviasi maksimum ",
+                     " Deviasi minimum "," Rata-rata deviasi "," Simpangan Baku deviasi ",
+                     " Data diluar batas Toleransi "," Data dengan pengurutan salah "],
+             'row':[0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11]}
+
+lDf = pd.DataFrame(labelData)
+
+for ind in lDf.index:
+    text = lDf['text'][ind]
+    row = lDf['row'][ind]
+    dx = lDf['dx'][ind]
+    dCL = labelResume(dx, text, row)
+    dCL.label()
+
+separator = tk.Label(resumeFrame, text="\n  < ======== Perbandingan Nilai Distorsi Jarak dan Koordinat  ========= > ")
+separator.grid(column=0, row=4, columnspan=3)
+
+for i_row in range(12):
+    if i_row == 4:
+        continue
+    else:
+        tk.Label(resumeFrame, text=" = ").grid(column=1, row=i_row)
 
 
+# ----------- FUNGSI PENGOLAHAN DATA -----------
 def processing():
     global data_count, na_rowE, na_rowN, data_filter_count
     print(choiceVar.get())
@@ -244,7 +237,7 @@ def processing():
 
 
 def procesStart():
-    global dC, NArE, dfC, dInit, dCount, dMax, dMin, dMean, dStd, devCount, fCount
+    global dC, NArE, NArN, dfC, dInit, dCount, dMax, dMin, dMean, dStd, devCount, fCount
     data_init, data, dataMerge = processing()
     NArE.set(na_rowE)
     NArN.set(na_rowN)
@@ -338,10 +331,13 @@ def procesStart():
     for rowD in distNotOK_row:
         devTreeview.insert("", "end", values=rowD)
 
+
 def clearData():
     inputTreeview.delete(*inputTreeview.get_children())
     transTreeview.delete(*transTreeview.get_children())
 
+
+# ----------- PENYIMPANAN DATA -----------
 def SaveFile():
     data_init, data, dataMerge = processing()
     extension = [("csv file(*.csv)","*.csv"), ('All tyes(*.*)', '*.*')]
